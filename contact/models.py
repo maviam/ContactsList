@@ -15,11 +15,8 @@ class Contact(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20) 
     phone = models.CharField(max_length=9)
-    email = models.EmailField(max_length=100, blank=True) # Permitedeixar o campo vazio
+    email = models.EmailField(max_length=100, blank=True) 
     created_date = models.DateTimeField(default=timezone.now)
-    # Nota: Tem de importar from django.utils import timezone
-    # Não esquecer de ir a settings.py e alterar o LANGUAGE_CODE para 'pt-pt'
-    # e o TIMEZONE para 'Europe/Lisbon'
     description = models.TextField(blank=True)
     picture = models.ImageField(blank=True,upload_to='pictures/%Y/%m/')
     category = models.ForeignKey(Category,on_delete=models.SET_NULL,blank=True,null=True)
