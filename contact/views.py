@@ -1,13 +1,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from contact.models import Contact
 from django.db.models import Q
+from django.core.paginator import Paginator
 
 # Create your views here.
 def index(request):
     # c = Contact.objects.all()
-    c = Contact.objects.filter(show=True).order_by('-id')[0:10]
+    c = Contact.objects.filter(show=True)
+    
+    paginator = Paginator(c, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+    
     context = {
-        'contacts': c,
+        'page_obj': page_obj,
         'site_title': 'Contacts List - '
     }
     return render (
@@ -32,8 +38,8 @@ def contact(request, contact_id):
 def search(request):
     # search_value = request.GET
     # print(search_value)
-    search_value = request.GET.get('q','').strip()
-
+    search_value = request.GET.get('q').strip()
+    
     if search_value == '':
         return redirect('contact:index')
 
@@ -41,8 +47,12 @@ def search(request):
     # contacts = Contact.objects.filter(show=True).filter(first_name__icontains=search_value).order_by('-id')[0:11]
     contacts = Contact.objects.filter(show=True).filter(Q(first_name__icontains=search_value) | Q(last_name__icontains=search_value)).order_by('-id')
 
+    paginator = Paginator(contacts, 10)
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
     context = {
-        'contacts': contacts,
+        'page_obj': page_obj,
         'site_title': 'Contatos -'
     }
 
@@ -51,3 +61,14 @@ def search(request):
         'contact/index.html',
         context
     )
+
+def create(request):
+
+	context = {
+		
+	}
+	return render(
+	    request,
+	    'contact/create.html',
+	    context
+	)
